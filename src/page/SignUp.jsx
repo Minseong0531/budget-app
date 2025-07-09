@@ -1,7 +1,7 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword} from "firebase/auth";
 import { useState } from "react";
 import { auth } from "../firebase/config";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () =>{
         const navigate = useNavigate();
@@ -23,7 +23,6 @@ const SignUp = () =>{
         let data ;
         try {
             if(newAccount) data = await createUserWithEmailAndPassword(auth, email, password);
-            else data = await signInWithEmailAndPassword(auth, email, password);
             console.log(email, password)
             navigate("/signin")
         } catch (error) {
@@ -39,7 +38,7 @@ const SignUp = () =>{
                         <div className="flex items-center space-x-2">
                             <img src="/Logo.svg" className="w-32 h-10" alt="Logo" />
                         </div>
-                        <a href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">Sign in</a>
+                        <Link to="/signin"  className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">Sign in</Link>
                     </div>
                 </div>
             </div>

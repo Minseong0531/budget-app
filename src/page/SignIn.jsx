@@ -1,6 +1,32 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
+import { auth } from "../firebase/config";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignIn() {
+
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("로그인 성공");
+      navigate("/home"); // 로그인 성공 후 이동 경로
+    } catch (err) {
+      console.error("로그인 실패:", err.message);
+      setError("이메일이나 비밀번호가 올바르지 않습니다.");
+    }
+  };
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -16,7 +42,7 @@ function SignIn() {
           </div>
   
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form action="#" method="POST" className="space-y-6">
+            <form action="#" method="POST" className="space-y-6" onSubmit={onSubmit}>
               <div>
                 <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
                   Email address
@@ -26,6 +52,8 @@ function SignIn() {
                     id="email"
                     name="email"
                     type="email"
+                    value={email}
+                    onChange={onChange}
                     required
                     autoComplete="email"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -49,6 +77,8 @@ function SignIn() {
                     id="password"
                     name="password"
                     type="password"
+                    value={password}
+                    onChange={onChange}
                     required
                     autoComplete="current-password"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -63,6 +93,15 @@ function SignIn() {
                 >
                   Sign in
                 </button>
+
+                <Link to={"/signup"}>
+                  <button
+                    type="button"
+                    className="mt-4 flex w-full justify-center rounded-md bg-sky-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      Create Acount
+                  </button>
+                  </Link>
+                {error && <p className="text-red-500 text-sm">{error}</p>}
               </div>
             </form>
   
