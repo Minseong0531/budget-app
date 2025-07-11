@@ -10,13 +10,11 @@ function InputForm({ formData, onInputChange, fields }) {
 
   const handleAdd = () => {
 
-    if (!amount || isNaN(amount)) return;
-
-    const newAmount = parseFloat(amount) || 0;
+    const newAmount = parseFloat(amount);
 
     
     if (type === 'out') {
-      const prevValue = formData[selectedField] || 0;
+      const prevValue = formData[selectedField];
       onInputChange(selectedField, prevValue + newAmount);
     }
 

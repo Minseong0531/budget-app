@@ -29,16 +29,16 @@ const PieGraph = () =>{
         saveData.saving;
 
       const inputChange = (name, value) => {
-        const parsed = parseFloat(value) || 0;
+        const parsed = parseFloat(value);
       
         setFormData(prev => ({
           ...prev,
-          [name]: (prev[name] || 0) + parsed
+          [name]: (prev[name]) + parsed
         }));
       
         setSaveData(prev => ({
           ...prev,
-          [name]: (prev[name] || 0) + parsed
+          [name]: (prev[name]) + parsed
         }));
       };
     
