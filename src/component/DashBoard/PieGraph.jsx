@@ -28,17 +28,20 @@ const PieGraph = () =>{
         saveData.etc +
         saveData.saving;
 
-      const inputChange = (name, value) =>{
-        setFormData(prevData => ({
-          ...prevData,
-          [name]:parseFloat(value) || 0
+      const inputChange = (name, value) => {
+        const parsed = parseFloat(value) || 0;
+      
+        setFormData(prev => ({
+          ...prev,
+          [name]: (prev[name] || 0) + parsed
         }));
-      }
+      
+        setSaveData(prev => ({
+          ...prev,
+          [name]: (prev[name] || 0) + parsed
+        }));
+      };
     
-      const updateChart = () =>{
-        setSaveData(formData);
-        /* setChartKey(prev=>prev+1); */
-      }
 
 
 
@@ -47,13 +50,13 @@ const PieGraph = () =>{
         "식비", "생활비", "문화/교육비", "기타", "저축"
         ],
         datasets: [{
-          label: 'My First Dataset',
+          label: '%',
           data: total === 0 ? [0, 0, 0, 0, 0] : [
-            ((saveData.food / total) * 100).toFixed(1),
-            ((saveData.life / total) * 100).toFixed(1),
-            ((saveData.culture / total) * 100).toFixed(1),
-            ((saveData.etc / total) * 100).toFixed(1),
-            ((saveData.saving / total) * 100).toFixed(1),
+            Number(((saveData.food / total) * 100).toFixed(1)),
+            Number(((saveData.life / total) * 100).toFixed(1)),
+            Number(((saveData.culture / total) * 100).toFixed(1)),
+            Number(((saveData.etc / total) * 100).toFixed(1)),
+            Number(((saveData.saving / total) * 100).toFixed(1)),
           ],
           backgroundColor: [
             "#FF6384",
@@ -72,12 +75,11 @@ const PieGraph = () =>{
             <InputForm
                 formData={formData}
                 onInputChange={inputChange}
-                onSubmit={updateChart}
                 fields={PieFields}
             />
-        <div className="w-30 h-30 mx-auto bg-white dark:bg-[#1E2028] p-4 rounded-lg shadow-md mt-4">
+        <div className="w-30 h-30 mx-auto bg-white dark:bg-[#1E2028] p-4 mt-4">
             <h2 className="text-center text-lg font-semibold mb-4">지출 내용 요약</h2>
-            <Pie data={data} />
+            <Pie key={chartKey} data={data} />
         </div>
     </div>
     )
