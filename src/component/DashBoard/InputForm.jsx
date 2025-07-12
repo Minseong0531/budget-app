@@ -1,34 +1,41 @@
 import { useState } from "react";
 
 function InputForm({ formData, onInputChange, fields }) {
+
+  // 카테고리 선택 = 초기값 첫번째
   const [selectedField, setSelectedField] = useState(fields[0].id);
+
+  //입력값
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState('');
   const [memo, setMemo] = useState('');
+
+  //입출금
   const [type, setType] = useState('out'); 
+
+  //내역 관리
   const [history, setHistory] = useState([]);
 
+  //추가 버튼 클릭시 실행
   const handleAdd = () => {
-
     const newAmount = parseFloat(amount);
-
-    
     if (type === 'out') {
-      const prevValue = formData[selectedField];
-      onInputChange(selectedField, prevValue + newAmount);
+      onInputChange(selectedField, newAmount);
     }
 
+    // 새 입력 기록
     const newRecord = {
       type,
       field: selectedField,
       label: fields.find(f => f.id === selectedField).label,
       amount: newAmount,
-      date,
       memo,
     };
+
+    // 최근 기록 추가 = 최대 5개의 기록 까지
     setHistory(prev => [newRecord, ...prev.slice(0, 4)]);
 
-    
+    //입력 이후 필드 초기화
     setAmount('');
     setDate('');
     setMemo('');
