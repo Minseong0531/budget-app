@@ -22,29 +22,28 @@ const PieFields = [
 const PieGraph = () =>{
   // 사용자 입력값
   const [formData, setFormData] = useState(getInitialData());
-
-  //파이 차트 실적용 데이터 (비율 계산)
-  const [saveData, setSaveData] = useState(getInitialData());
-
-  //항목 전체의 금액
-  const total = Object.values(saveData).reduce((sum, val)=> sum + val, 0);
+  // 입력 내용
+  const [history, setHistory] = useState([]);
         
+  const income = history
+    .filter((item) => item.type === "in")
+    .reduce((sum, item) => sum + item.amount, 0);
+  const expenses = history
+    .filter((item) => item.type === "out")
+    .reduce((sum, item) => sum + item.amount, 0);
+  const total = Object.values(formData).reduce((sum, val) => sum + val, 0);
 
-      const inputChange = (name, value) => {
-        const parsed = parseFloat(value);
-      
-        setFormData(prev => ({
-          ...prev,
-          [name]: prev[name] + parsed
-        }));
-      
-        setSaveData(prev => ({
-          ...prev,
-          [name]: prev[name] + parsed
-        }));
-      };
-    
 
+  const inputChange = (field, amount, type, date, memo) => {
+    if (type === "out") {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: prev[field] + amount,
+    }));
+  }
+    const newRecord = { field, amount, type, date, memo };
+    setHistory((prev) => [newRecord, ...prev.slice(0, 4)]);
+  };
 
 //차트 데이터 내용
       const pieData = {
@@ -52,7 +51,7 @@ const PieGraph = () =>{
         datasets: [{
           label: '%',
           data: PieFields.map(data =>
-            total === 0 ? 0 : Number(((saveData[data.id]/total)*100).toFixed(1))
+            total === 0 ? 0 : Number(((formData[data.id]/total)*100).toFixed(1))
           ),
           backgroundColor: [
             "#FF6384",
@@ -73,12 +72,26 @@ const PieGraph = () =>{
                 onInputChange={inputChange}
                 fields={PieFields}
             />
+            {/* 최근 입력 내역 */}
+            {history.length > 0 && (
+                    <div className="bg-white dark:bg-[#2a2c34] mt-6 p-4 rounded shadow text-sm">
+                      <h3 className="font-semibold mb-2">최근 입력 내역</h3>
+                      <ul className="space-y-1">
+                        {history.slice(0, 5).map((item, idx) => (
+                          <li key={idx} className="border-b pb-1">
+                            <strong>[{item.type === "out" ? "출금" : "입금"}]</strong>{" "}
+                            {item.date && `${item.date} | `}
+                            {PieFields.find((f) => f.id === item.field)?.label || item.field} -{" "}
+                            {item.amount.toLocaleString()}원
+                            {item.memo && ` | 메모: ${item.memo}`}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+            )}
         <div className="w-30 h-30 mx-auto bg-white dark:bg-[#1E2028] p-4 mt-4">
             <h2 className="text-center text-lg font-semibold mb-4">지출 내용 요약</h2>
             <Pie data={pieData} />
-            {
-              console.log(saveData)
-            }
         </div>
     </div>
     )

@@ -1,6 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function InputForm({ formData, onInputChange, fields }) {
+
+/*   const [charts, setCharts] = useState([]);
+
+  const getChart = () =>{
+    const storedCharts = localStorage.getItem('charts')
+    if(storedCharts){
+      setCharts(JSON.parse(storedCharts));
+    }
+  }
+  
+  useEffect(()=> {
+    getChart();
+  },[]);
+  
+  const saveLocalCharts = (chart) =>{
+    const newCharts = [...charts, {text: chart, completed:false}];
+    setCharts(newCharts);
+    localStorage.setItem('charts',JSON.stringify(newCharts));
+  }
+  const removeLocalCharts = (chartToRemove) =>{
+    const newCharts = charts.filter(chart => chart.text !== chartToRemove.text);
+    setCharts( newCharts );
+    localStorage.setItem('charts',JSON.stringify(newCharts));
+  } */
+  
+
 
   // 카테고리 선택 = 초기값 첫번째
   const [selectedField, setSelectedField] = useState(fields[0].id);
@@ -13,27 +39,13 @@ function InputForm({ formData, onInputChange, fields }) {
   //입출금
   const [type, setType] = useState('out'); 
 
-  //내역 관리
-  const [history, setHistory] = useState([]);
 
   //추가 버튼 클릭시 실행
   const handleAdd = () => {
     const newAmount = parseFloat(amount);
-    if (type === 'out') {
-      onInputChange(selectedField, newAmount);
-    }
 
-    // 새 입력 기록
-    const newRecord = {
-      type,
-      field: selectedField,
-      label: fields.find(f => f.id === selectedField).label,
-      amount: newAmount,
-      memo,
-    };
-
-    // 최근 기록 추가 = 최대 5개의 기록 까지
-    setHistory(prev => [newRecord, ...prev.slice(0, 4)]);
+    if (isNaN(newAmount) || !selectedField) return;
+      onInputChange(selectedField, newAmount, type, date, memo);
 
     //입력 이후 필드 초기화
     setAmount('');
@@ -99,6 +111,7 @@ function InputForm({ formData, onInputChange, fields }) {
           onClick={handleAdd}
           className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
         >
+          
           추가
         </button>
       </div>
@@ -112,23 +125,6 @@ function InputForm({ formData, onInputChange, fields }) {
           </div>
         ))}
       </div>
-
-      {/* 최근 입력 내역 */}
-      {history.length > 0 && (
-        <div className="bg-white dark:bg-[#2a2c34] p-3 rounded shadow mt-4 text-sm">
-          <h3 className="font-semibold mb-2">최근 입력 내역</h3>
-          <ul className="space-y-1">
-            {history.map((item, idx) => (
-              <li key={idx} className="border-b pb-1">
-                <strong>[{item.type === 'out' ? '출금' : '입금'}]</strong>{' '}
-                {item.date && `${item.date} | `} 
-                {item.label} - {item.amount.toLocaleString()}원
-                {item.memo && ` | 메모: ${item.memo}`}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }
