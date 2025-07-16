@@ -6,6 +6,8 @@ import Home from './page/Home'
 import LoadingScreen from './component/LoadingScreen'
 import Welcome from './component/welcome'
 import SignUp from './page/SignUp'
+import Balance from './page/Balance'
+
 function App() {
 
   const [showLoading, setShowLoading] = useState(true);
@@ -37,6 +39,7 @@ function App() {
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/home' element={<Home />} />
+          <Route path='/balance' element={<Balance />} />
       </Routes>
     </div>
   )

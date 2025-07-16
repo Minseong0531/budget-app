@@ -1,7 +1,8 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword} from "firebase/auth";
 import { useState } from "react";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
 import { Link, useNavigate } from "react-router-dom";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function SignIn() {
 
@@ -19,13 +20,22 @@ function SignIn() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("로그인 성공");
-      navigate("/home"); // 로그인 성공 후 이동 경로
-    } catch (err) {
-      console.error("로그인 실패:", err.message);
-      setError("이메일이나 비밀번호가 올바르지 않습니다.");
-    }
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+        const user = userCredential.user;
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        // Firestore 문서 확인
+        if (docSnap.exists()) {
+          // 기존 사용자 - 바로 홈으로 이동
+          navigate("/home");
+        } else {
+          navigate("/balance");
+        }
+    
+      } catch (err) {
+        setError(err.message); // Firebase가 리턴하는 상세 에러 메시지 표시
+        console.error("로그인 실패:", err);
+      }
   };
 
     return (

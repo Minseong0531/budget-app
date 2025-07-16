@@ -1,4 +1,4 @@
-function TodaySummaryCard({ transactions }) {
+function TodaySummaryCard({ transactions = [], balance = 0 }) {
   const outTotal = transactions
     .filter(tx => tx.type === 'out')
     .reduce((sum, tx) => sum + tx.amount, 0);
@@ -16,6 +16,10 @@ function TodaySummaryCard({ transactions }) {
       <div>
         <p className="text-gray-500">오늘 입금</p>
         <p className="text-xl font-semibold text-indigo-500">{inTotal.toLocaleString()}원</p>
+      </div>
+      <div>
+        <p className="text-gray-500">잔액</p>
+        <p className="text-xl font-semibold text-green-600">{balance.toLocaleString()}원</p>
       </div>
     </div>
   );
