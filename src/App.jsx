@@ -1,4 +1,4 @@
-import { Route, Router, Routes, useNavigate } from 'react-router-dom'
+import { Route, Router, Routes, useNavigate, Navigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import './App.css'
 import SignIn from './page/SignIn'
@@ -35,7 +35,8 @@ function App() {
   return (
     <div className="h-screen p-4 sm:p-6 md:p-8">
       <Routes>
-        <Route path='/welcome' element={<Welcome />} />
+          <Route path="/" element={<Navigate to="/welcome" replace />} />
+          <Route path='/welcome' element={<Welcome />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/home' element={<Home />} />
