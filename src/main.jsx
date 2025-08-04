@@ -8,7 +8,7 @@ import { AuthProvider } from './component/AuthContext'
 
 createRoot(document.getElementById('root')).render(
   <AuthProvider>
-    <BrowserRouter>
+    <BrowserRouter basename="/budget-app">
       <App />
     </BrowserRouter>
   </AuthProvider>,
