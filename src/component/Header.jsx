@@ -22,7 +22,7 @@ function Header(){
       <span className="sr-only">Home</span>
       <img
               alt="TodayBudget"
-              src="/Logo.svg"
+              src="./Logo.svg"
               className="mx-auto h-10 w-auto"
             />
     </a>
